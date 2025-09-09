@@ -3,7 +3,17 @@ const { ConnectionRequestModel } = require("../models/connectionRequest");
 const { userAuth } = require("../middlewares/userAuth");
 const { User } = require("../models/user");
 
+
 const requestRouter = express.Router();
+
+
+// Steps to Send a Successful Connection Request
+// 1️⃣ Authenticate logged-in user (fromUser)
+// 2️⃣ Check if toUser exists
+// 3️⃣ Validate status (ignored / interested)
+// 4️⃣ Prevent self-request (fromUser ≠ toUser)
+// 5️⃣ Check if request already exists (direct or reverse)
+// 6️⃣ Save in DB and send response
 
 requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res) => {
     try {
@@ -46,9 +56,17 @@ requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res)
 
     }
     catch (err) {
-        res.status(404).json({ message: err.message });
+        return res.status(404).json({ message: err.message });
     }
 })
+
+// Steps of reviewing a request
+// Validate the status → must be "accepted" or "rejected".
+// Check if the request document exists by requestId.
+// Ensure request status is still "interested" → only then it can be reviewed.
+// Check authorization → toUserId (in document) must match loggedInUserId (reviewer).
+// Update the status → change to "accepted" or "rejected".
+// Save & respond → send success message.
 
 requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, res) => {
     try {
@@ -82,22 +100,7 @@ requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, r
     }
 })
 
+
 module.exports = { requestRouter };
 
 
-// Steps to Send a Successful Connection Request
-// 1️⃣ Authenticate logged-in user (fromUser)
-// 2️⃣ Check if toUser exists
-// 3️⃣ Validate status (ignored / interested)
-// 4️⃣ Prevent self-request (fromUser ≠ toUser)
-// 5️⃣ Check if request already exists (direct or reverse)
-// 6️⃣ Save in DB and send response
-
-
-// Steps of reviewing a request
-// Validate the status → must be "accepted" or "rejected".
-// Check if the request document exists by requestId.
-// Ensure request status is still "interested" → only then it can be reviewed.
-// Check authorization → toUserId (in document) must match loggedInUserId (reviewer).
-// Update the status → change to "accepted" or "rejected".
-// Save & respond → send success message.

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
         required: true
@@ -51,6 +51,6 @@ userSchema.methods.verifyPassword = function (PasswordInputByUser) {
     return isPasswordValid;
 }
 
-const User = mongoose.model('user', userSchema);
+const User = new mongoose.model('user', userSchema);
 
 module.exports = { User };
