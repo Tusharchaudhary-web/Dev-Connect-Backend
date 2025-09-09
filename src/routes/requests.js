@@ -21,9 +21,9 @@ requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res)
             if (!toUser) return res.status(404).json({ message: 'user not found' });
         }
 
-        if (fromUserId.toString() === toUserId.toString()) {
-            return res.status(400).json({ message: 'you cannot send request to self' });
-        }
+        // if (fromUserId.toString() === toUserId.toString()) {
+        //     return res.status(400).json({ message: 'you cannot send request to self' });
+        // }
 
         const existRequest = await ConnectionRequestModel.findOne({
             $or: [
@@ -50,6 +50,37 @@ requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res)
     }
 })
 
+requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, res) => {
+    try {
+
+        const loggedInUser = req.user;
+        const status = req.params.status;
+        const requestId = req.params.requestId;
+
+        const allowedStatus = ['accepted', 'rejected'];
+        if (!allowedStatus.includes(status)) {
+            return res.status(404).json({ message: `Invalid status ${status} ` })
+        }
+
+        const existrequest = await ConnectionRequestModel.findOne({
+            _id: requestId,
+            toUserId: loggedInUser._id,
+            status: "interested"
+        })
+
+        if (!existrequest) {
+            return res.status(404).json({ message: 'Request not found' });
+        }
+
+        existrequest.status = status;
+        await existrequest.save();
+        res.json({ message: `Request ${status}` })
+
+    }
+    catch (err) {
+        return res.status(404).json({ message: err.message });
+    }
+})
 
 module.exports = { requestRouter };
 
@@ -61,3 +92,12 @@ module.exports = { requestRouter };
 // 4️⃣ Prevent self-request (fromUser ≠ toUser)
 // 5️⃣ Check if request already exists (direct or reverse)
 // 6️⃣ Save in DB and send response
+
+
+// Steps of reviewing a request
+// Validate the status → must be "accepted" or "rejected".
+// Check if the request document exists by requestId.
+// Ensure request status is still "interested" → only then it can be reviewed.
+// Check authorization → toUserId (in document) must match loggedInUserId (reviewer).
+// Update the status → change to "accepted" or "rejected".
+// Save & respond → send success message.
