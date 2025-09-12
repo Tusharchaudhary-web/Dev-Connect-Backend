@@ -119,3 +119,23 @@
 //     });
 
 
+// app.post('/user',(req,res)=>{
+//     try{
+//         const { fullName}=req.body;
+//         if(fullName.length<3 || fullName.length>30){
+//             res.status(422).json({message:'invalid name'});
+//         }
+//         res.status(200).json({message:'data updated'});
+//     }
+//     catch(err){
+//         res.status(400).json(err.message);
+//     }
+// })
+
+
+
+// API versioning means when you make changes to your API (for example, adding new fields or changing response format), older clients using your old API should still work without errors
+
+// Suppose you deployed your Node.js application, and suddenly it starts crashing with "out of memory" errors. What steps would you take to debug and fix the issue?
+
+// Suppose two users try to update the same record in your database at the same time. How would you prevent data inconsistency?
