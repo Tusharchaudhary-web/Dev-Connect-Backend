@@ -5,6 +5,7 @@ const { validateSignUp } = require('../utils/validateSignUp');
 const { validateLogin } = require('../utils/validateLogin');
 
 
+
 const authRouter = express.Router();
 
 authRouter.post("/signup", async (req, res) => {
@@ -22,7 +23,7 @@ authRouter.post("/signup", async (req, res) => {
 
         const user = new User({ fullName, Email, Password: hashPassword, About });
         await user.save();
-        res.json({ message: `${user.fullName} saved sucessfully`, user });
+        res.status(201).json({ message: `${user.fullName} saved sucessfully`, user });
     }
     catch (err) {
         res.status(400).json({ message: err.message });
@@ -35,6 +36,9 @@ authRouter.post("/login", async (req, res) => {
         const { Email, Password } = req.body;
 
         const user = await User.findOne({ Email: Email });
+        if(!user){
+            return res.status(401).json('Invalid credentials');
+        }
 
         const isPasswordValid = await user.verifyPassword(Password);
         if (!isPasswordValid) {
@@ -42,7 +46,7 @@ authRouter.post("/login", async (req, res) => {
         }
         const token = await user.getJWT();
         res.cookie('token', token, { httpOnly: true, secure: true, expires: new Date(Date.now() + 12 * 3600000) });
-        res.json({ message: `${user.fullName} loggedin sucessfully` });
+        res.status(200).json({ message: `${user.fullName} loggedin sucessfully` ,user});
         // when a user loggedIn , server creates a token and send it to the user inside a cookie.
     }
     catch (err) {
