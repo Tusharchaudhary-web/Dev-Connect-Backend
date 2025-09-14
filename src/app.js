@@ -11,7 +11,10 @@ const cors =require('cors');
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    origin:"http://localhost:5173/" ,
+    credentials:true   // The backend should know where your frontend is hosted , whitelisting the domain 
+}));
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
