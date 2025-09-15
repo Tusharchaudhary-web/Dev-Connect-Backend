@@ -6,6 +6,8 @@ const { validateLogin } = require('../utils/validateLogin');
 
 
 
+// const authRouter = express.Router();
+
 const authRouter = express.Router();
 
 authRouter.post("/signup", async (req, res) => {
