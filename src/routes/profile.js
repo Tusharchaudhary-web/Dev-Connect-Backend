@@ -4,9 +4,9 @@ const { validateUserProfile } = require("../utils/validateUserProfile");
 
 const profileRouter = express.Router();
 
-profileRouter.post("/profile/view", userAuth, async (req, res) => {
+profileRouter.get("/profile/view", userAuth, async (req, res) => {
     const user = req.user;
-    res.json({ user });
+    res.status(200).json({ user });
 })
 
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
@@ -17,7 +17,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
         const loggedInUser = req.user;
 
         // Object.keys(req.body).forEach((key) => loggedInUser[key] = req.body[key]);
-        Object.assign(loggedInUser,req.body);
+        Object.assign(loggedInUser, req.body);
 
         await loggedInUser.save();
         console.log(loggedInUser);

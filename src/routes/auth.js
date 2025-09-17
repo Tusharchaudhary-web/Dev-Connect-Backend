@@ -14,7 +14,7 @@ authRouter.post("/signup", async (req, res) => {
     try {
         validateSignUp(req);
 
-        const { fullName, Email, Password, About } = req.body;
+        const { fullName, Email, Password, About, PhotoURL } = req.body;
 
         const existingUser = await User.findOne({ Email: Email });
         if (existingUser) {
@@ -23,7 +23,7 @@ authRouter.post("/signup", async (req, res) => {
 
         const hashPassword = await bcrypt.hash(Password, 10);
 
-        const user = new User({ fullName, Email, Password: hashPassword, About });
+        const user = new User({ fullName, Email, Password: hashPassword, About, PhotoURL });
         await user.save();
         res.status(201).json({ message: `${user.fullName} saved sucessfully`, user });
     }
@@ -38,7 +38,7 @@ authRouter.post("/login", async (req, res) => {
         const { Email, Password } = req.body;
 
         const user = await User.findOne({ Email: Email });
-        if(!user){
+        if (!user) {
             return res.status(401).json('Invalid credentials');
         }
 
@@ -48,7 +48,7 @@ authRouter.post("/login", async (req, res) => {
         }
         const token = await user.getJWT();
         res.cookie('token', token, { httpOnly: true, secure: true, expires: new Date(Date.now() + 12 * 3600000) });
-        res.status(200).json({ message: `${user.fullName} loggedin sucessfully` ,user});
+        res.status(200).json({ message: `${user.fullName} loggedin sucessfully`, user });
         // when a user loggedIn , server creates a token and send it to the user inside a cookie.
     }
     catch (err) {
