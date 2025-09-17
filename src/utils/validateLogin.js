@@ -1,19 +1,20 @@
+
 const validator = require("validator");
 
-const validateLogin = (req) => {
+const validateLogin = (req,res) => {
     const { Email, Password } = req.body;
 
     if (!Email) {
-        throw new Error("Email is required");
+        return res.status(401).json({ message: 'Email is required' });
     }
-    else {
-        if (!validator.isEmail(Email)) {
-            throw new Error('kindly enter valid Email');
-        }
+
+    if (!validator.isEmail(Email)) {
+        return res.status(401).json({ message: 'Kindly enter valid Email' });
     }
+
     if (!Password) {
-        throw new Error("Enter your password");
+        return res.status(401).json({ message: 'Enter your password' });
     }
-}
+};
 
 module.exports = { validateLogin };

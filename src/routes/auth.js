@@ -34,17 +34,17 @@ authRouter.post("/signup", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
     try {
-        validateLogin(req);
+        validateLogin(req,res);
         const { Email, Password } = req.body;
 
         const user = await User.findOne({ Email: Email });
         if (!user) {
-            return res.status(401).json('Invalid credentials');
+             return res.status(401).json({ message: "Invalid credentials" });
         }
 
         const isPasswordValid = await user.verifyPassword(Password);
         if (!isPasswordValid) {
-            throw new Error('Invalid Credentionals');
+            return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = await user.getJWT();
         res.cookie('token', token, { httpOnly: true, secure: true, expires: new Date(Date.now() + 12 * 3600000) });
@@ -52,7 +52,7 @@ authRouter.post("/login", async (req, res) => {
         // when a user loggedIn , server creates a token and send it to the user inside a cookie.
     }
     catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 })
 
