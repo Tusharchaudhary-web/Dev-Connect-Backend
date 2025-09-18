@@ -5,20 +5,16 @@ const { validateSignUp } = require('../utils/validateSignUp');
 const { validateLogin } = require('../utils/validateLogin');
 
 
-
-// const authRouter = express.Router();
-
 const authRouter = express.Router();
 
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/signup", validateSignUp,async (req, res) => {
     try {
-        validateSignUp(req);
-
+    
         const { fullName, Email, Password, About, PhotoURL } = req.body;
 
         const existingUser = await User.findOne({ Email: Email });
         if (existingUser) {
-            throw new Error("Invalid credentials");
+            return res.status(409).json({ message: 'Invalid credentials' })
         }
 
         const hashPassword = await bcrypt.hash(Password, 10);
@@ -32,14 +28,14 @@ authRouter.post("/signup", async (req, res) => {
     }
 })
 
-authRouter.post("/login", async (req, res) => {
+authRouter.post("/login", validateLogin,async (req, res) => {
     try {
-        validateLogin(req,res);
         const { Email, Password } = req.body;
 
         const user = await User.findOne({ Email: Email });
+
         if (!user) {
-             return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
         const isPasswordValid = await user.verifyPassword(Password);
@@ -52,16 +48,17 @@ authRouter.post("/login", async (req, res) => {
         // when a user loggedIn , server creates a token and send it to the user inside a cookie.
     }
     catch (err) {
-        return res.status(400).json({ message: err.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 })
 
 authRouter.post("/logout", (req, res) => {
     const token = null;
     res.cookie('token', token, { expires: new Date(Date.now()) })
-    res.json({ message: 'user loggedout sucessfully' });
+    res.status(200).json({ message: 'user loggedout sucessfully' });
     // set the token to null and expire the cookie
 })
 
-
 module.exports = { authRouter };
+
+

@@ -4,32 +4,27 @@ const { validateUserProfile } = require("../utils/validateUserProfile");
 
 const profileRouter = express.Router();
 
-profileRouter.get("/profile/view", userAuth, async (req, res) => {
-    const user = req.user;
-    res.status(200).json({ user });
+
+profileRouter.get("/profile/view", userAuth, (req, res) => {
+    const loggedInUseruser = req.user;
+    res.status(200).json({ loggedInUseruser });
 })
 
-profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
-    try {
-        if (!validateUserProfile(req)) {
-            return res.status(400).json({ message: 'Update is not allowed' });
-        }
-        const loggedInUser = req.user;
 
-        // Object.keys(req.body).forEach((key) => loggedInUser[key] = req.body[key]);
+profileRouter.patch("/profile/edit", userAuth, validateUserProfile, async (req, res) => {
+    try {
+        const loggedInUser = req.user;
+        // Object.keys(req.body).forEach(key=>loggedInUser[key]=req.body[key]);
         Object.assign(loggedInUser, req.body);
 
+        res.status(200).json({ message: 'Profile updated sucessfully' });
         await loggedInUser.save();
-        console.log(loggedInUser);
-
-        res.json({ message: 'Profile edited sucesfully' });
     }
     catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 })
 
 module.exports = { profileRouter };
 
-// 1008230036
 

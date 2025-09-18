@@ -46,17 +46,15 @@ requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res)
             ]
         })
         if (existRequest) {
-            return res.status(400).json({ message: 'Request already exist' });
+            return res.status(409).json({ message: 'Request already exist' });
         }
-
-
         const connectionRequest = new ConnectionRequestModel({ fromUserId, toUserId, status });
         await connectionRequest.save();
-        res.json({ message: `${req.user.fullName} sents a connection request to ${toUser.fullName}` });
+        res.status(200).json({ message: `${req.user.fullName} sents a connection request to ${toUser.fullName}` });
 
     }
     catch (err) {
-        return res.status(404).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 })
 
@@ -77,28 +75,29 @@ requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, r
 
         const allowedStatus = ['accepted', 'rejected'];
         if (!allowedStatus.includes(status)) {
-            return res.status(404).json({ message: `Invalid status ${status} ` })
+            return res.status(403).json({ message: `Invalid status ${status} ` })
         }
 
-        const existrequest = await ConnectionRequestModel.findOne({
+        const existRequest = await ConnectionRequestModel.findOne({
             _id: requestId,
-            toUserId: loggedInUser._id,
+            toUserId: loggedInUser.id,
             status: "interested"
         })
 
-        if (!existrequest) {
+        if (!existRequest) {
             return res.status(404).json({ message: 'Request not found' });
         }
 
-        existrequest.status = status;
-        await existrequest.save();
-        res.json({ message: `Request ${status}` })
+        existRequest.status = status;
+        await existRequest.save();
+        res.status(200).json({ message: `Request ${status}` })
 
     }
     catch (err) {
-        return res.status(404).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 })
+
 
 
 module.exports = { requestRouter };

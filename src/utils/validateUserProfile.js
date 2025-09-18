@@ -1,10 +1,10 @@
-const validateUserProfile=(req)=>{
-const allowedUpdates=['fullName','PhotoURL',"About",'Skills'];
-
-const isallowedUpdate=Object.keys(req.body).every((key)=>allowedUpdates.includes(key));
-return isallowedUpdate;
+const validateUserProfile = (req, res,next) => {
+    const updateAllowed = ["fullName", "About", "PhotoURL", "Skills"];
+    const isUpdateAllowed = Object.keys(req.body).every(key => updateAllowed.includes(key));
+    if(!isUpdateAllowed){
+       return res.status(403).json({message:'Update is not allowed'});
+    }
+    next();
 }
 
 module.exports={validateUserProfile};
-
-

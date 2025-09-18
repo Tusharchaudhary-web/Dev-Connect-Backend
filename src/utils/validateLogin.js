@@ -1,7 +1,7 @@
 
 const validator = require("validator");
 
-const validateLogin = (req,res) => {
+const validateLogin = (req, res,next) => {
     const { Email, Password } = req.body;
 
     if (!Email) {
@@ -15,6 +15,7 @@ const validateLogin = (req,res) => {
     if (!Password) {
         return res.status(401).json({ message: 'Enter your password' });
     }
+    next();
 };
 
 module.exports = { validateLogin };
