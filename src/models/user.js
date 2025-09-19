@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
         required: true
+        
     },
     Email: {
         type: String,
@@ -21,7 +22,8 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     PhotoURL: {
-        type: String
+        type: String,
+        default:"https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg"
     },
     About: {
         type: String,
@@ -51,6 +53,6 @@ userSchema.methods.verifyPassword = function (PasswordInputByUser) {
     return isPasswordValid;
 }
 
-const User = new mongoose.model('user', userSchema);
+const User = new mongoose.model('User', userSchema);
 
 module.exports = { User };

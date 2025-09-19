@@ -1,5 +1,5 @@
 const express = require('express');
-const { ConnectionRequestModel } = require("../models/connectionRequest");
+const { ConnectionRequest } = require("../models/connectionRequest");
 const { userAuth } = require("../middlewares/userAuth");
 const { User } = require("../models/user");
 
@@ -35,7 +35,7 @@ requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res)
         //     return res.status(400).json({ message: 'you cannot send request to self' });
         // }
 
-        const existRequest = await ConnectionRequestModel.findOne({
+        const existRequest = await ConnectionRequest.findOne({
             $or: [
                 {
                     fromUserId: fromUserId, toUserId: toUserId
@@ -48,8 +48,8 @@ requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res)
         if (existRequest) {
             return res.status(409).json({ message: 'Request already exist' });
         }
-        const connectionRequest = new ConnectionRequestModel({ fromUserId, toUserId, status });
-        await connectionRequest.save();
+        const connectionReq = new ConnectionRequest({ fromUserId, toUserId, status });
+        await connectionReq.save();
         res.status(200).json({ message: `${req.user.fullName} sents a connection request to ${toUser.fullName}` });
 
     }
@@ -78,7 +78,7 @@ requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, r
             return res.status(403).json({ message: `Invalid status ${status} ` })
         }
 
-        const existRequest = await ConnectionRequestModel.findOne({
+        const existRequest = await ConnectionRequest.findOne({
             _id: requestId,
             toUserId: loggedInUser.id,
             status: "interested"

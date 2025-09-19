@@ -7,9 +7,9 @@ const { validateLogin } = require('../utils/validateLogin');
 
 const authRouter = express.Router();
 
-authRouter.post("/signup", validateSignUp,async (req, res) => {
+authRouter.post("/signup", validateSignUp, async (req, res) => {
     try {
-    
+
         const { fullName, Email, Password, About, PhotoURL } = req.body;
 
         const existingUser = await User.findOne({ Email: Email });
@@ -28,7 +28,7 @@ authRouter.post("/signup", validateSignUp,async (req, res) => {
     }
 })
 
-authRouter.post("/login", validateLogin,async (req, res) => {
+authRouter.post("/login", validateLogin, async (req, res) => {
     try {
         const { Email, Password } = req.body;
 

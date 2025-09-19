@@ -6,8 +6,8 @@ const profileRouter = express.Router();
 
 
 profileRouter.get("/profile/view", userAuth, (req, res) => {
-    const loggedInUseruser = req.user;
-    res.status(200).json({ loggedInUseruser });
+    const user = req.user;
+    res.status(200).json({ user });
 })
 
 
