@@ -13,15 +13,16 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
         const loggedInUser = req.user;
 
         const connectionRequests = await ConnectionRequest.find({
-            toUserId: loggedInUser.id,
+            toUserId: loggedInUser._id,
             status: "interested"
         })
-            .populate("fromUserId", "fullName About");
-        // .populate("fromUserId");
-        if (connectionRequests.length === 0)
-            return res.status(404).json({ message: 'user not found' });
+            .select("fromUserId")
+            .populate("fromUserId", "fullName About PhotoURL");
+        // if (connectionRequests.length === 0)
+        //     return res.status(404).json({ message: 'user not found' });
 
-        res.status(200).json(connectionRequests);
+        const data = connectionRequests.map(row=>row.fromUserId);
+        res.status(200).json({data });
     }
 
     catch (err) {
@@ -36,26 +37,27 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         const connectionRequests = await ConnectionRequest.find(
             {
                 $or: [
-                    { toUserId: loggedInUser.id, status: "accepted" },
-                    { fromUserId: loggedInUser.id, status: "accepted" }
+                    { toUserId: loggedInUser._id, status: "accepted" },
+                    { fromUserId: loggedInUser._id, status: "accepted" }
                 ]
             }
         )
-            .populate("fromUserId", "fullName")
-            .populate("toUserId", "fullName");
+            //  .select("fullName About PhotoURL")
+            .populate("fromUserId", "fullName About PhotoURL")
+            .populate("toUserId", "fullName About PhotoURL");
 
-        if (connectionRequests.length === 0) {
-            return res.status(404).json({ message: 'user not found' });
-        }
+        // if (connectionRequests.length === 0) {
+        //     return res.status(404).json({ message: 'user not found' });
+        // }
         const data = connectionRequests.map(row => {
-            if (row.fromUserId._id.toString() === loggedInUser.id.toString()) {
+            if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
                 return row.toUserId;
             }
             else {
                 return row.fromUserId;
             }
         });
-        res.status(200).json(data);
+        res.status(200).json({ data });
     }
     catch (err) {
         return res.status(500).json({ message: err.message });

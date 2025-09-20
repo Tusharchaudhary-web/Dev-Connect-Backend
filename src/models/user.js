@@ -29,9 +29,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "Hello this is about myself"
     },
-    Skills: {
-        type: [String]
-    }
 },
     {
         timestamps: true
