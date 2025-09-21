@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -37,7 +38,7 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.getJWT = async function () {
     const user = this;
     const payload = { _id: user._id };
-    const secret_key = "Tushar@123";
+    const secret_key = process.env.JWT_SECRET;
 
     const token = await jwt.sign(payload, secret_key, { expiresIn: "7d" });
     return token;
