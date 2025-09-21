@@ -21,8 +21,8 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
         // if (connectionRequests.length === 0)
         //     return res.status(404).json({ message: 'user not found' });
 
-        const data = connectionRequests.map(row=>row.fromUserId);
-        res.status(200).json({data });
+
+        res.status(200).json({ data: connectionRequests });
     }
 
     catch (err) {

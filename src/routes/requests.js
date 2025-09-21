@@ -90,7 +90,7 @@ requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, r
 
         existRequest.status = status;
         await existRequest.save();
-        res.status(200).json({ message: `Request ${status}` })
+        res.status(200).json({ message: `Request ${status}`,existRequest })
 
     }
     catch (err) {
