@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 
 app.use(cors({ 
-    origin:["http://localhost:5173","https://funny-semolina-bc763a.netlify.app"],
+    origin:["https://glowing-bunny-7700a2.netlify.app/"],
     credentials:true   // The backend should know where your frontend is hosted , whitelisting the domain 
 }));
 
