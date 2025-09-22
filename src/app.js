@@ -14,12 +14,9 @@ app.use(cookieParser());
 
 
 app.use(cors({ 
-    origin:["https://glowing-bunny-7700a2.netlify.app"],
+    origin:"http://localhost:5173",
     credentials:true   // The backend should know where your frontend is hosted , whitelisting the domain 
 }));
-
-
-
 
 
 app.use("/", authRouter);
