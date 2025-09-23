@@ -14,8 +14,7 @@ app.use(cookieParser());
 
 
 app.use(cors({ 
-    // origin:"http://localhost:5173",
-    origin:"https://cerulean-paprenjak-d522f4.netlify.app",
+    origin:"http://localhost:5173",
     credentials:true   // The backend should know where your frontend is hosted , whitelisting the domain 
 }));
 
