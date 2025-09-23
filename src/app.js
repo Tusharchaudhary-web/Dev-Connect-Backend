@@ -14,10 +14,10 @@ app.use(cookieParser());
 
 
 app.use(cors({ 
-    origin:"http://localhost:5173",
-    credentials:true   // The backend should know where your frontend is hosted , whitelisting the domain 
+    //    origin:"http://localhost:5173",
+    origin: "http://13.232.31.95",   // The backend should know where your frontend is hosted , whitelisting the domain 
+    credentials: true
 }));
-
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
