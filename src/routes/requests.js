@@ -2,7 +2,7 @@ const express = require('express');
 const { ConnectionRequest } = require("../models/connectionRequest");
 const { userAuth } = require("../middlewares/userAuth");
 const { User } = require("../models/user");
-const sendEmail = require('../utils/sendEmail');
+
 
 const requestRouter = express.Router();
 
@@ -50,9 +50,6 @@ requestRouter.post('/request/send/:status/:toUserId', userAuth, async (req, res)
         }
         const connectionReq = new ConnectionRequest({ fromUserId, toUserId, status });
         await connectionReq.save();
-
-        const emailRes =await sendEmail.run();
-        console.log(emailRes);
 
         res.status(200).json({ message: `${req.user.fullName} sents a connection request to ${toUser.fullName}` });
 
