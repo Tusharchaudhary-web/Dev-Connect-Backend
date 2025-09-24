@@ -162,3 +162,17 @@ it will never get a chance to execute
 The main job of server is to respond back to the user.
 
 
+
+ // Object.keys(req.body).forEach(key=>loggedInUser[key]=req.body[key]);
+
+
+
+ Lecture on dotenv files
+
+ How to keep our credentials safe
+
+ we will install a dotenv package : npm install dotenv
+
+ Now we will create a .env file inside root
+ and keep our credentials there and that is called envronmet variables
+and we can access these variables using process.env

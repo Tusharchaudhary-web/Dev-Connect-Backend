@@ -1,10 +1,9 @@
 // Read the token from req.cookies , validate the token, find the user
 // when any API call is made ,server read the token from cookies and validate the token to check who is loggedin
 
-
 const jwt = require('jsonwebtoken');
 const { User } = require('../models/user');
-require('dotenv').config();
+
 
 const userAuth = async (req, res, next) => {
     try {

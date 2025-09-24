@@ -5,19 +5,21 @@ const { authRouter } = require('./routes/auth');
 const { profileRouter } = require('./routes/profile');
 const { requestRouter } = require('./routes/requests');
 const { userRouter } = require('./routes/user');
-const cors =require('cors');
+const cors = require('cors');
 
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
 
-app.use(cors({ 
-    //    origin:"http://localhost:5173",
-    origin: "http://13.232.31.95",   // The backend should know where your frontend is hosted , whitelisting the domain 
-    credentials: true
+app.use(cors({
+  origin: 'http://localhost:5173', // allow your frontend
+   credentials:true
 }));
+
+
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
@@ -26,7 +28,7 @@ app.use("/", userRouter);
 
 DBConnect().then(() => {
     console.log("✅ Connected to Database successfully");
-    app.listen(3000, () => {
+    app.listen(process.env.PORT, () => {
         console.log("🚀 Server is successfully running at the port 3000");
     });
 })
