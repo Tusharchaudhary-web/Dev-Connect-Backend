@@ -176,3 +176,32 @@ The main job of server is to respond back to the user.
  Now we will create a .env file inside root
  and keep our credentials there and that is called envronmet variables
 and we can access these variables using process.env
+
+
+
+
+13.232.104.30
+
+----------------------------------------
+
+1)login
+ssh -i "Dev Connect-secret.pem" ubuntu@ec2-13-232-31-95.ap-south-1.compute.amazonaws.com
+
+2)go to project
+cd Dev-Connect-frontend
+
+3)Install the dependencies
+npm install
+npm run build
+
+
+sudo apt update
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo cp -r dist/* /var/www/html/
+sudo systemctl start nginx
+
+------------------------------------------------------
+
+backend
+
