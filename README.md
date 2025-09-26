@@ -4,7 +4,7 @@ first user will comeon our application , first of all he will signup
 
 and as soon as he signup he will autheticate(login)
 
-Group multiple routes under respective router
+Group multiple routes under respective routers
 
 authRouter
 1) post/signup
