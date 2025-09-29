@@ -33,7 +33,7 @@ initializeSocket(server);
 
 DBConnect().then(() => {
     console.log("✅Connected to Database successfully");
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
         console.log("🚀 Server is successfully running at the port 3000");
     });
 })
