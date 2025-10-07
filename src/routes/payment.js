@@ -18,7 +18,6 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
       "amount": membershipAmount[membershipType] * 100,
       "currency": "INR",
       "receipt": "receipt#1",
-      "partial_payment": false,
       "notes": {
         fullName, Email, membershipType
       }
@@ -33,7 +32,7 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
       amount: order.amount,
       currency: order.currency,
       receipt: order.receipt,
-      notes: order.notes
+      notes: order.notes,
 
     })
 
@@ -52,8 +51,12 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 
 paymentRouter.post("/payment/webhook", async (req, res) => {
   try {
+
     console.log("Webhook Called");
+
     const webhookSignature = req.get("X-Razorpay-Signature");
+     console.log("Webhook Signature", webhookSignature);
+
     const isWebhookValid = validateWebhookSignature(
       JSON.stringify(req.body),
       webhookSignature,
@@ -63,25 +66,25 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
     if (!isWebhookValid) {
       return res.status(400).json({ msg: "Webhook signature is invalid" });
     }
+        console.log("Valid Webhook Signature");
 
     // Extract payment details from webhook
     const paymentDetails = req.body.payload.payment.entity;
 
     // Find payment record in DB
     const payment = await Payment.findOne({ orderId: paymentDetails.order_id });
-    if (!payment) {
-      return res.status(404).json({ msg: "Payment record not found" });
-    }
 
     // Update payment status
     payment.status = paymentDetails.status;
     await payment.save();
+  console.log("Payment saved");
 
     // Update user to premium
     const user = await User.findOne({_id:payment.userId});
     
       user.isPremium = true;
-      user.membershipType = payment.notes?.membershipType;
+      user.membershipType = payment.notes.membershipType;
+          console.log("User saved");
       await user.save();
     
 
@@ -94,9 +97,12 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
 
 paymentRouter.get("/premium/verify", userAuth, async (req, res) => {
   const user = req.user.toJSON();
-  return res.json({ isPremium: user.isPremium, membershipType: user.membershipType });
+  console.log(user);
+  if (user.isPremium) {
+    return res.json({ ...user });
+  }
+  return res.json({ ...user });
 });
-
 
 module.exports = paymentRouter;
 
