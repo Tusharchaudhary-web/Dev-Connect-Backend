@@ -78,12 +78,12 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
     await payment.save();
 
     // Update user to premium
-    const user = await User.findById(payment.userId);
-    if (user) {
+    const user = await User.findOne({_id:payment.userId});
+    
       user.isPremium = true;
-      user.membershipType = payment.notes?.membershipType || "default";
+      user.membershipType = payment.notes?.membershipType;
       await user.save();
-    }
+    
 
     // Must return success to Razorpay
     return res.status(200).json({ msg: "Webhook received successfully" });
