@@ -30,6 +30,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "Hello this is about myself"
     },
+     isPremium: {
+        type: Boolean,
+        default: false
+    },
+    membershipType: {
+        type: String
+    }
 },
     {
         timestamps: true

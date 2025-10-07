@@ -12,6 +12,7 @@ const app = express();
 const http = require('http');
 const initializeSocket = require('./utils/socket');
 const {chatRouter} = require('./routes/chat');
+const  paymentRouter  = require('./routes/payment');
 
 app.use(express.json());
 app.use(cookieParser());
@@ -26,7 +27,7 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", chatRouter);
-
+app.use("/", paymentRouter);
 
 const server = http.createServer(app);
 initializeSocket(server);
@@ -34,7 +35,7 @@ initializeSocket(server);
 DBConnect().then(() => {
     console.log("✅Connected to Database successfully");
     server.listen(process.env.PORT, () => {
-        console.log("🚀 Server is successfully running at the port 7777");
+        console.log("🚀 Server is successfully running at the port 3000");
     });
 })
     .catch(() => {
